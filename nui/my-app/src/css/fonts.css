@@ -1,0 +1,23 @@
+.oleo-script swash caps-regular {
+  font-family: "Oleo Script Swash Caps", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.oleo-script swash caps-bold {
+  font-family: "Oleo Script Swash Caps", system-ui;
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "House Script";
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/SignPainterHouseScriptRegular.ttf') format("truetype");
+
+}
+.house-script {
+  font-family: "House Script", "Comic Sans";
+  font-size: 4rem;
+}

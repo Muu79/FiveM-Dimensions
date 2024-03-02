@@ -7,7 +7,11 @@ window.addEventListener("message", (event) => {
     case "dimesion-update":
         document.getElementById('dimension-text').textContent = "Dimension: " + data.n
       break;
+    case "hide-menu":
+      
+      break;
     default:
       break;
   }
+  
 });

@@ -1,0 +1,28 @@
+#backer{
+    width: fit-content;
+    height: fit-content;
+    padding: 5px;
+    background-color: rgba(10, 10, 10, 0.5);
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+}
+
+#dimension-text{
+    color: white;
+}
+
+#menu{
+    position: absolute;
+    background-color: rgba(10, 10, 10, 0.7);
+    top: 5px;
+    right: 10px;
+    width: 25%;
+    height: 30%;
+}
+#menu-header{
+    text-align: center;
+    background-color: aqua;
+    font-size: 32px;
+    font-weight: 900;
+}

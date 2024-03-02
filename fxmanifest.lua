@@ -22,8 +22,11 @@ server_scripts{
 ui_page 'nui/nui.html'
 
 files {
-    'nui/nui.html',
-    'nui/style.css',
+    'nui/my-app/src/nui.html',
+    'nui/css/style.css',
+    'nui/css/fonts.css',
+    'nui/fonts/*',
     'nui/script.js',
-    'nui/images/*'
+    'nui/images/*',
+    'nui/node_modules/*'
 }
