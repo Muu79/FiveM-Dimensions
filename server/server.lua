@@ -13,7 +13,7 @@ RegisterNetEvent('ch_buckets:warp', function(bucketId, vehicleNetId)
 end)
 
 CreateThread(function ()
-    GlobalState:set('limit', 3, true)
+    GlobalState:set('limit', 5, true)
 end)
 
 RegisterCommand('bucket', function (source, args, raw)
