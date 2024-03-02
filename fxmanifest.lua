@@ -16,3 +16,14 @@ client_scripts {
 server_scripts{
     'server/server.lua'
 }
+
+-- Nui Info
+
+ui_page 'nui/nui.html'
+
+files {
+    'nui/nui.html',
+    'nui/style.css',
+    'nui/script.js',
+    'nui/images/*'
+}
