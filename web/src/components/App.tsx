@@ -30,10 +30,11 @@ const ReturnClientDataComp: React.FC<ReturnClientDataCompProps> = ({ data }) => 
 
 
 const App: React.FC = () => {
-  const [menuItems, setMenuItems] = useState([{name:'item1'}, {name: 'item2'}]);
+  const [menuItems, setMenuItems] = useState<{name:string}[]>([{name:'item1'}, {name: 'item2'}]);
   useEffect(()=>{
     fetchNui('getMenuOptions').then(res => {
       console.log(res);
+      setMenuItems(res);
     }).catch(e => {
       console.error(e)
     })
