@@ -82,7 +82,8 @@ const Menu: React.FC = (props) => {
                     dispatch({ type: 'select', payload: i });
                 }} style={{
                     cursor: 'pointer',
-                    color: i === state.selectedIndex ? 'red' : 'black',
+                    backgroundColor: i === state.selectedIndex ?  '#164141': 'rgba(26, 31, 31, 0.811)',
+                    color: i === state.selectedIndex ?  'rgba(220, 220, 220, 1)': 'rgba(82, 82, 82, 1)'
                 }} />
             )]
         }</div>
