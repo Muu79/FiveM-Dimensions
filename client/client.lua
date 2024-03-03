@@ -1,5 +1,5 @@
 local function toggleNuiFrame(shouldShow)
-  SetNuiFocus(shouldShow, shouldShow)
+  SetNuiFocus(shouldShow, false)
   SendReactMessage('setVisible', shouldShow)
 end
 

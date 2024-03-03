@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css'
 import {debugData} from "../utils/debugData";
 import {fetchNui} from "../utils/fetchNui";
+import Menu from './Menu/Menu';
 
 // This will set the NUI to visible if we are
 // developing in browser
@@ -48,15 +49,8 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="nui-wrapper">
-      <div className='popup-thing'>
-        <div>
-          <h1>This is the NUI Popup!</h1>
-          <p>Exit with the escape key</p>
-          <button onClick={handleGetClientData}>Get Client Data</button>
-          {clientData && <ReturnClientDataComp data={clientData} />}
-        </div>
-      </div>
+    <div>
+      <Menu />
     </div>
   );
 }
