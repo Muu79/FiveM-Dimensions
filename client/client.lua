@@ -24,6 +24,15 @@ RegisterNUICallback('getClientData', function(data, cb)
   cb(retData)
 end)
 
+local MenuData <const> = {
+  {name = 'Toggle Hider'},
+  {name = 'Set Dimension Limit'},
+}
+RegisterNUICallback('getMenuOptions', function (data, cb --[[function]])
+  debugPrint('Data sent by react', json.encode(data))
+  cb(MenuData)
+end)
+
 CreateThread(function()
   LocalPlayer.state:set('dimension', 0, true)
 end)

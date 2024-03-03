@@ -5,24 +5,6 @@ import { useEffect, useReducer, useState } from 'react';
 
 const initialState = { selectedIndex: 0 };
 
-const reducer = (state: { selectedIndex: number; }, action: { type: any; payload?: any; }) => {
-    switch (action.type) {
-        case 'arrowUp':
-            return {
-                selectedIndex:
-                    state.selectedIndex !== 0 ? state.selectedIndex - 1 : menuItems.length - 1,
-            };
-        case 'arrowDown':
-            return {
-                selectedIndex:
-                    state.selectedIndex !== menuItems.length - 1 ? state.selectedIndex + 1 : 0,
-            };
-        case 'select':
-            return { selectedIndex: action.payload };
-        default:
-            throw new Error();
-    }
-};
 
 const useKeyPress = (targetKey: any) => {
     const [keyPressed, setKeyPressed] = useState(false);
@@ -51,15 +33,28 @@ const useKeyPress = (targetKey: any) => {
     return keyPressed;
 };
 
-const menuItems = [
-    { name: 'Item1', cb: null },
-    { name: 'Item2', cb: null },
-    { name: 'Item3', cb: null }
-]
-
-const Menu: React.FC = (props) => {
+const Menu = (props: { items: any[]; }) => {
+    const menuItems = props.items; 
     const arrowUpPressed = useKeyPress('ArrowUp');
     const arrowDownPressed = useKeyPress('ArrowDown');
+    const reducer = (state: { selectedIndex: number; }, action: { type: any; payload?: any; }) => {
+        switch (action.type) {
+            case 'arrowUp':
+                return {
+                    selectedIndex:
+                        state.selectedIndex !== 0 ? state.selectedIndex - 1 : menuItems.length - 1,
+                };
+            case 'arrowDown':
+                return {
+                    selectedIndex:
+                        state.selectedIndex !== menuItems.length - 1 ? state.selectedIndex + 1 : 0,
+                };
+            case 'select':
+                return { selectedIndex: action.payload };
+            default:
+                throw new Error();
+        }
+    };
     const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
