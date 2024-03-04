@@ -116,10 +116,10 @@ const Menu = (props: { items: any[]; }) => {
         <div className='menu-wrapper'>
             <div className='menu-header'><span id='h1' className='house-script'>Dimension Settings</span></div>
             <div className='menu-body' >{
-                [...menuItems.map((v: { name: string }, i: number) =>
-                    <MenuItem title={v.name} key={i} style={{
+                [...menuItems.map((v: { name: string, info ?: any }, i: number) =>
+                    <MenuItem title={v.name} key={i} info={v.info} style={{
                         cursor: 'pointer',
-                        backgroundColor: i === state.selectedIndex ? '#164141' : 'rgba(26, 31, 31, 0.811)',
+                        backgroundColor: i === state.selectedIndex ? '#1b6262' : 'rgba(26, 31, 31, 0.811)',
                         color: i === state.selectedIndex ? 'rgba(220, 220, 220, 1)' : 'rgba(82, 82, 82, 1)'
                     }} />
                 )]

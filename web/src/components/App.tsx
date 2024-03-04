@@ -15,12 +15,12 @@ debugData([
 
 
 const App: React.FC = () => {
-  const [menuItems, setMenuItems] = useState<{name:string}[]>([{name:'item1'}, {name: 'item2'}]);
+  const [menuItems, setMenuItems] = useState<{name:string, info?:any}[]>([{name:'item1'}, {name: 'item2'}]);
   useEffect(()=>{
     fetchNui('getMenuOptions').then(res => {
       setMenuItems(res);
     }).catch(e => {
-      setMenuItems([{name: 'item1'}, {name: 'item2'}, {name:'item3'}])
+      setMenuItems([{name: 'item1'}, {name: 'item2'}, {name:'item3', info:33}])
       console.error(e)
     })
   }, [])
