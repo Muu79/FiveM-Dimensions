@@ -1,7 +1,7 @@
 import './Menu.css';
 import '../../css/fonts.css'
 import MenuItem from './MenuItem';
-import { SetStateAction, useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { fetchNui } from "../../utils/fetchNui";
 
 const initialState = { selectedIndex: 0 };

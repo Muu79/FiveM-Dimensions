@@ -3,6 +3,9 @@ local function toggleNuiFrame(shouldShow)
   SendReactMessage('setVisible', shouldShow)
 end
 
+CreateThread(function ()
+  LocalPlayer.state:set('seeker', false, true)
+end)
 
 RegisterNUICallback('hideFrame', function(_, cb)
   toggleNuiFrame(false)
@@ -31,6 +34,10 @@ end)
 
 RegisterNUICallback('setDimensionLimit', function (body, cb)
   TriggerServerEvent('ch_dimensions:updateLimit', body.limit)
+end)
+
+RegisterNuiCallback('toggleSeeker', function ()
+  LocalPlayer.state:set('seeker', true, true)
 end)
 
 CreateThread(function()

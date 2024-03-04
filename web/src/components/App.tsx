@@ -17,18 +17,6 @@ interface ReturnClientDataCompProps {
   data: any
 }
 
-const ReturnClientDataComp: React.FC<ReturnClientDataCompProps> = ({ data }) => (
-  <>
-    <h5>Returned Data:</h5>
-    <pre>
-      <code>
-        {JSON.stringify(data, null)}
-      </code>
-    </pre>
-  </>
-)
-
-
 const App: React.FC = () => {
   const [menuItems, setMenuItems] = useState<{name:string}[]>([{name:'item1'}, {name: 'item2'}]);
   useEffect(()=>{
