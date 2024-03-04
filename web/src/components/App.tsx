@@ -33,12 +33,12 @@ const App: React.FC = () => {
   const [menuItems, setMenuItems] = useState<{name:string}[]>([{name:'item1'}, {name: 'item2'}]);
   useEffect(()=>{
     fetchNui('getMenuOptions').then(res => {
-      console.log(res);
       setMenuItems(res);
     }).catch(e => {
+      setMenuItems([{name: 'item1'}, {name: 'item2'}, {name:'item3'}])
       console.error(e)
     })
-  })
+  }, [])
   return (
     <div>
       <Menu items={menuItems}/>
