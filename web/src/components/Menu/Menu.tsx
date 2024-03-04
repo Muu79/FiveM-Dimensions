@@ -37,12 +37,19 @@ const useKeyPress = (targetKey: any) => {
 
 
 
-const Menu = (props: { items: any[]; }) => {
-    const menuItems = props.items;
+const Menu = () => {
     const [showInput, setShowInput] = useState<boolean>(false);
+    const [input, setInput] = useState<string>();
+    const handleChange = (e: any) => {
+        setInput(e.target.value)
+    }
+    const handleInputEnter = (e: any) => {
+        if (e.keyCode === 27) { setShowInput(false); setInput('') };
+    }
+
+    
     const menuFunctions = [
         (i: number) => {
-            console.log("Nui", i)
             fetchNui('toggleSeeker').catch(e => console.log(e));
         },
         (i: number) => {
@@ -55,16 +62,34 @@ const Menu = (props: { items: any[]; }) => {
             };
         },
         (i: number) => {
-
+            if (!showInput) {
+                setShowInput(true)
+            }
+            else {
+                setShowInput(false)
+                fetchNui('setHiderCD', { limit: input }).catch(e => console.log(e))
+            };
+        },
+        (i: number) => {
+            if (!showInput) {
+                setShowInput(true)
+            }
+            else {
+                setShowInput(false)
+                fetchNui('setSeekerCD', { limit: input }).catch(e => console.log(e))
+            };
         }
     ]
-    const [input, setInput] = useState<string>();
-    const handleChange = (e: any) => {
-        setInput(e.target.value)
-    }
-    const handleInputEnter = (e: any) => {
-        if (e.keyCode === 27) { setShowInput(false); setInput('') };
-    }
+    const [menuItems, setMenuItems] = useState<{ name: string, info?: any }[]>([{ name: 'item1' }, { name: 'item2' }]);
+    useEffect(() => {
+        fetchNui('getMenuOptions').then(res => {
+            setMenuItems(res);
+        }).catch(e => {
+            setMenuItems([{ name: 'item1' }, { name: 'item2' }, { name: 'item3', info: 33 }])
+            console.error(e)
+        })
+    }, [menuItems, showInput])
+
     const arrowUpPressed = useKeyPress('ArrowUp');
     const arrowDownPressed = useKeyPress('ArrowDown');
     const enterPressed = useKeyPress('Enter');
@@ -116,7 +141,7 @@ const Menu = (props: { items: any[]; }) => {
         <div className='menu-wrapper'>
             <div className='menu-header'><span id='h1' className='house-script'>Dimension Settings</span></div>
             <div className='menu-body' >{
-                [...menuItems.map((v: { name: string, info ?: any }, i: number) =>
+                [...menuItems.map((v: { name: string, info?: any }, i: number) =>
                     <MenuItem title={v.name} key={i} info={v.info} style={{
                         cursor: 'pointer',
                         backgroundColor: i === state.selectedIndex ? '#1b6262' : 'rgba(26, 31, 31, 0.811)',
