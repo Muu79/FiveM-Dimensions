@@ -43,7 +43,7 @@ const Menu = (props: { items: any[]; }) => {
     const menuFunctions = [
         (i: number) => {
             console.log("Nui", i)
-            fetchNui('toggleHider').catch(e => console.log(e));
+            fetchNui('toggleSeeker').catch(e => console.log(e));
         },
         (i: number) => {
             if (!showInput) {
