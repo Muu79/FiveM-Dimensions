@@ -3,10 +3,6 @@ local function toggleNuiFrame(shouldShow)
   SendReactMessage('setVisible', shouldShow)
 end
 
-RegisterCommand('show-nui', function()
-  toggleNuiFrame(true)
-  debugPrint('Show NUI frame')
-end)
 
 RegisterNUICallback('hideFrame', function(_, cb)
   toggleNuiFrame(false)
@@ -31,6 +27,10 @@ local MenuData <const> = {
 RegisterNUICallback('getMenuOptions', function (data, cb --[[function]])
   debugPrint('Data sent by react', json.encode(data))
   cb(MenuData)
+end)
+
+RegisterNUICallback('setDimensionLimit', function (body, cb)
+  TriggerServerEvent('ch_dimensions:updateLimit', body.limit)
 end)
 
 CreateThread(function()
@@ -64,7 +64,6 @@ RegisterCommand('+slideUp', function(source, args, raw)
   end
   TriggerEvent('ch_buckets:pre_warp', currDimension + 1)
 end, false)
-
 RegisterCommand('-slideUp', function(source, args, raw)
 end, false)
 
@@ -78,10 +77,15 @@ RegisterCommand('+slideDown', function(source, args, raw)
   end
   TriggerEvent('ch_buckets:pre_warp', LocalPlayer.state.dimension - 1)
 end, false)
-
 RegisterCommand('-slideDown', function(source, args, raw)
 end, false)
 
+RegisterCommand('+showMenu', function ()
+  toggleNuiFrame(true)
+end)
+RegisterCommand('-showMenu', function ()
+end)
 
+RegisterKeyMapping('+showMenu', 'Show the dimension menu', 'keyboard', 'F5')
 RegisterKeyMapping('+slideUp', 'Jump up a dimension', 'mouse_button', 'MOUSE_EXTRABTN2')
 RegisterKeyMapping('+slideDown', 'Jump down a dimension', 'mouse_button', 'MOUSE_EXTRABTN1')
