@@ -13,9 +13,6 @@ debugData([
   }
 ])
 
-interface ReturnClientDataCompProps {
-  data: any
-}
 
 const App: React.FC = () => {
   const [menuItems, setMenuItems] = useState<{name:string}[]>([{name:'item1'}, {name: 'item2'}]);
