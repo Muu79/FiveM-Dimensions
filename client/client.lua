@@ -1,3 +1,4 @@
+
 local function toggleNuiFrame(shouldShow)
   SetNuiFocus(shouldShow, false)
   SendReactMessage('setVisible', shouldShow)
@@ -5,9 +6,9 @@ end
 
 local function setCDTimer()
   if LocalPlayer.state.seeker then
-    LocalPlayer.state:set('timer', 100, true)
+    LocalPlayer.state:set('timer', GlobalState.seekerTime or 100, true)
   else
-    LocalPlayer.state:set('timer', 3000, true)
+    LocalPlayer.state:set('timer', GlobalState.hiderTime or 3000, true)
   end
 end
 
@@ -38,13 +39,28 @@ RegisterNUICallback('getClientData', function(data, cb)
   cb(retData)
 end)
 
-local MenuData <const> = {
-  { name = 'Toggle Seeker' },
-  { name = 'Set Dimension Limit' },
-}
 RegisterNUICallback('getMenuOptions', function(data, cb --[[function]])
   debugPrint('Data sent by react', json.encode(data))
+  local MenuData <const> = {
+    { name = 'Toggle Seeker' },
+    { name = 'Set Dimension Limit', info = GlobalState.limit },
+    { name = 'Set Warp Cooldown (Hider)', info = GlobalState.hiderTime / 1000},
+    { name = 'Set Warp Cooldown (Seeker)', info = GlobalState.seekerTime / 1000}
+  }
   cb(MenuData)
+end)
+
+RegisterNuiCallback('getCDTime', function(_, cb)
+  cb({ timer = LocalPlayer.state.seeker and GlobalState.seekerTimer or GlobalState.hiderTime })
+end)
+
+RegisterNuiCallback('setCDTime', function(data, cb)
+  data.type = string.lower(data.type)
+  if not tonumber(data.time) or tonumber(data.time) > 1000 or tonumber(data.time) < 0 then
+    TriggerEvent('chat:AddMessage', { args = { '~r~Please Enter a Valid Number In Seconds Between 0 And 1000' } })
+  end
+  if not data or not data.time or (data.type ~= 'hider' and data.type ~= 'seeker') then return end
+  TriggerServerEvent('ch_dimensions:setCDTime', data.type, data.time)
 end)
 
 RegisterNUICallback('setDimensionLimit', function(body, cb)
