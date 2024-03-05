@@ -1,4 +1,3 @@
-
 local function toggleNuiFrame(shouldShow)
   SetNuiFocus(shouldShow, false)
   SendReactMessage('setVisible', shouldShow)
@@ -18,8 +17,11 @@ CreateThread(function()
 end)
 
 RegisterNuiCallback('toggleSeeker', function(_, cb)
-  LocalPlayer.state:set('seeker', not LocalPlayer.state.seeker or false, true)
+  LocalPlayer.state:set('seeker', not LocalPlayer.state.seeker, true)
   setCDTimer()
+  TriggerEvent('chat:addMessage',
+    { args = { ('You are now a %s'):format(LocalPlayer.state.seeker and "~r~Seeker" or "~b~Hider") } })
+  TriggerEvent('ch_dimensions:updateReact', source)
   cb({})
 end)
 
@@ -39,13 +41,18 @@ RegisterNUICallback('getClientData', function(data, cb)
   cb(retData)
 end)
 
+RegisterNetEvent('ch_dimensions:updateReact', function()
+  SendNUIMessage({ type = 'update' })
+end)
+
 RegisterNUICallback('getMenuOptions', function(data, cb --[[function]])
   debugPrint('Data sent by react', json.encode(data))
   local MenuData <const> = {
     { name = 'Toggle Seeker' },
-    { name = 'Set Dimension Limit', info = GlobalState.limit},
-    { name = 'Set Warp Cooldown (Hider)', info = GlobalState.hiderTime / 1000, units ='sec'},
-    { name = 'Set Warp Cooldown (Seeker)', info = GlobalState.seekerTime / 1000, units ='sec'}
+    { name = 'Set Dimension Limit', info = GlobalState.limit,             units = ' dimensions' },
+    { name = 'Set Hider Cooldown',  info = GlobalState.hiderTime / 1000,  units = 's' },
+    { name = 'Set Seeker Cooldown', info = GlobalState.seekerTime / 1000, units = 's' },
+    { name = 'Toggle Dimension HUD' }
   }
   cb(MenuData)
 end)
@@ -59,7 +66,8 @@ RegisterNuiCallback('setCDTime', function(data, cb)
   print(data.type, 'got event', data.time, tonumber(data.time))
   if not tonumber(data.time) or tonumber(data.time) > 1000 or tonumber(data.time) < 0 then
     TriggerEvent('chat:AddMessage', { args = { '~r~Please Enter a Valid Number In Seconds Between 0 And 1000' } })
-    return cb({})
+    cb({})
+    return
   end
   TriggerServerEvent('ch_dimensions:setCDTime', data.type, data.time)
   cb({})
@@ -67,6 +75,7 @@ end)
 
 RegisterNUICallback('setDimensionLimit', function(body, cb)
   TriggerServerEvent('ch_dimensions:updateLimit', body.limit)
+  cb({})
 end)
 
 
@@ -82,7 +91,8 @@ RegisterNetEvent('ch_buckets:pre_warp', function(bucketId)
     if (GetGameTimer() - lastJump) > (LocalPlayer.state.timer or 1000) then
       jumpCool = false
     else
-      TriggerEvent('chat:addMessage', {args={('~y~Cooldown is not up yet, %s seconds left'):format((3000 - (GetGameTimer() - lastJump))/1000)}})
+      TriggerEvent('chat:addMessage',
+        { args = { ('~y~Cooldown is not up yet, %s seconds left'):format((3000 - (GetGameTimer() - lastJump)) / 1000) } })
       return
     end
   end
@@ -102,38 +112,11 @@ RegisterNetEvent('ch_buckets:pre_warp', function(bucketId)
   })
 end)
 
-RegisterCommand('+slideUp', function(source, args, raw)
-  local limit = GlobalState.limit
-  local currDimension = LocalPlayer.state.dimension
-  if currDimension == limit then
-    return
-  elseif currDimension > limit or currDimension < 0 then
-    TriggerEvent('ch_buckets:pre_warp', limit)
-    return
-  end
-  TriggerEvent('ch_buckets:pre_warp', currDimension + 1)
-end, false)
-RegisterCommand('-slideUp', function(source, args, raw)
-end, false)
-
-
-RegisterCommand('+slideDown', function(source, args, raw)
-  if LocalPlayer.state.dimension == 0 then
-    return
-  elseif LocalPlayer.state.dimension < 0 or LocalPlayer.state.dimension > GlobalState.limit then
-    TriggerEvent('ch_buckets:pre_warp', 0)
-    return
-  end
-  TriggerEvent('ch_buckets:pre_warp', LocalPlayer.state.dimension - 1)
-end, false)
-RegisterCommand('-slideDown', function(source, args, raw)
-end, false)
-
 RegisterCommand('+showMenu', function()
   toggleNuiFrame(true)
-end)
+end, false)
 RegisterCommand('-showMenu', function()
-end)
+end, false)
 
 RegisterKeyMapping('+showMenu', 'Show the dimension menu', 'keyboard', 'F5')
 RegisterKeyMapping('+slideUp', 'Jump up a dimension', 'mouse_button', 'MOUSE_EXTRABTN2')

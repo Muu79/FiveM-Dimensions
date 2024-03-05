@@ -1,9 +1,9 @@
 
 .menu-wrapper{
     box-sizing: border-box;
-    width: auto;
+    width: fit-content;
     max-width: 350px;
-    min-width: max-content;
+    min-width: fit-content;
     height: auto;
     max-height: 35%;
     background-color: rgba(35, 35, 35, 0.6);
@@ -35,6 +35,7 @@
   .menu-item{
     padding: 5px;
     width: auto;
+    min-width: fit-content;
     font-family: "Noto Sans Display", sans-serif;
   }
 

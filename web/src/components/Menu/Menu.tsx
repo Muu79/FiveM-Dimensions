@@ -3,6 +3,8 @@ import '../../css/fonts.css'
 import MenuItem from './MenuItem';
 import { useEffect, useReducer, useState } from 'react';
 import { fetchNui } from "../../utils/fetchNui";
+import { hasKey } from '../../utils/misc';
+import { wait } from '@testing-library/user-event/dist/utils';
 
 const initialState = { selectedIndex: 0 };
 
@@ -47,6 +49,31 @@ const Menu = () => {
         if (e.keyCode === 27) { setShowInput(false); setInput('') };
     }
 
+    const [nuiUpdate, toggleNuiUpdate] = useState(false);
+    useEffect(() => {
+        const handleUpdate = (e: { data: { type: string } }) => {
+            switch ((e.data.type) || "") {
+                case 'update':
+                    toggleNuiUpdate(!nuiUpdate)
+                    break;
+                default:
+                    break;
+            }
+        }
+        window.addEventListener('message', handleUpdate)
+
+        return () => window.removeEventListener('message', handleUpdate)
+    })
+    const [menuItems, setMenuItems] = useState<{ name: string; info?: any, units?: any }[]>([{ name: 'item1' }, { name: 'item2' }]);
+    useEffect(() => {
+        if (showInput) return;
+        fetchNui('getMenuOptions').then((res: { name: string; info?: any, units?: any }[]) => {
+            setMenuItems(res);
+        }).catch(e => {
+            setMenuItems([{ 'name': 'item1' }, { 'name': 'item2' }, { 'name': 'item3', info: 33, units: 'dimensions' }])
+            console.error(e)
+        })
+    }, [nuiUpdate, showInput])
 
     const menuFunctions = [
         (i: number) => {
@@ -57,8 +84,8 @@ const Menu = () => {
                 setShowInput(true)
             }
             else {
+                fetchNui('setDimensionLimit', { limit: input }).then().catch(e => console.log(e))
                 setShowInput(false)
-                fetchNui('setDimensionLimit', { limit: input }).catch(e => console.log(e))
             };
         },
         (i: number) => {
@@ -66,8 +93,8 @@ const Menu = () => {
                 setShowInput(true)
             }
             else {
+                fetchNui('setCDTime', { time: input, type: 'hider' }).then().catch(e => console.log(e))
                 setShowInput(false)
-                fetchNui('setCDTime', { time: input, type: 'hider' }).catch(e => console.log(e))
             };
         },
         (i: number) => {
@@ -75,22 +102,11 @@ const Menu = () => {
                 setShowInput(true)
             }
             else {
+                fetchNui('setCDTime', { time: input, type: 'seeker' }).then().catch(e => console.log(e))
                 setShowInput(false)
-                fetchNui('setCDTime', { time: input, type: 'seeker' }).catch(e => console.log(e))
             };
         }
     ]
-    const [menuItems, setMenuItems] = useState<{ name: string, info?: any, units?: string}[]>([{ name: 'item1' }, { name: 'item2' }]);
-    useEffect(() => {
-        fetchNui('getMenuOptions').then(res => {
-            setMenuItems(res);
-            console.log(res)
-        }).catch(e => {
-            setMenuItems([{ name: 'item1' }, { name: 'item2' }, { name: 'item3', info: 33 }])
-            console.error(e)
-        })
-        return () => {};
-    }, [input])
 
     const arrowUpPressed = useKeyPress('ArrowUp');
     const arrowDownPressed = useKeyPress('ArrowDown');
@@ -117,8 +133,6 @@ const Menu = () => {
         }
     };
     const [state, dispatch] = useReducer(reducer, initialState);
-
-
     useEffect(() => {
         if (arrowUpPressed) {
             dispatch({ type: 'arrowUp' });
@@ -142,7 +156,7 @@ const Menu = () => {
         <div className='menu-wrapper'>
             <div className='menu-header'><span id='h1' className='house-script'>Dimension Settings</span></div>
             <div className='menu-body' >{
-                [...menuItems.map((v: { name: string, info?: any, units?:any }, i: number) =>
+                [...menuItems.map((v: { name: string, info?: any, units?: any }, i: number) =>
                     <MenuItem title={v.name} key={i} info={v.info} units={v.units} style={{
                         cursor: 'pointer',
                         backgroundColor: i === state.selectedIndex ? '#1b6262' : 'rgba(26, 31, 31, 0.811)',
