@@ -47,7 +47,7 @@ const Menu = () => {
         if (e.keyCode === 27) { setShowInput(false); setInput('') };
     }
 
-    
+
     const menuFunctions = [
         (i: number) => {
             fetchNui('toggleSeeker').catch(e => console.log(e));
@@ -67,7 +67,7 @@ const Menu = () => {
             }
             else {
                 setShowInput(false)
-                fetchNui('setHiderCD', { limit: input }).catch(e => console.log(e))
+                fetchNui('setCDTime', { time: input, type: 'hider' }).catch(e => console.log(e))
             };
         },
         (i: number) => {
@@ -76,19 +76,21 @@ const Menu = () => {
             }
             else {
                 setShowInput(false)
-                fetchNui('setSeekerCD', { limit: input }).catch(e => console.log(e))
+                fetchNui('setCDTime', { time: input, type: 'seeker' }).catch(e => console.log(e))
             };
         }
     ]
-    const [menuItems, setMenuItems] = useState<{ name: string, info?: any }[]>([{ name: 'item1' }, { name: 'item2' }]);
+    const [menuItems, setMenuItems] = useState<{ name: string, info?: any, units?: string}[]>([{ name: 'item1' }, { name: 'item2' }]);
     useEffect(() => {
         fetchNui('getMenuOptions').then(res => {
             setMenuItems(res);
+            console.log(res)
         }).catch(e => {
             setMenuItems([{ name: 'item1' }, { name: 'item2' }, { name: 'item3', info: 33 }])
             console.error(e)
         })
-    }, [menuItems, showInput])
+        return () => {};
+    }, [input])
 
     const arrowUpPressed = useKeyPress('ArrowUp');
     const arrowDownPressed = useKeyPress('ArrowDown');
@@ -106,7 +108,6 @@ const Menu = () => {
                         state.selectedIndex !== menuItems.length - 1 ? state.selectedIndex + 1 : 0,
                 };
             case 'enter':
-                console.log(state.selectedIndex);
                 menuFunctions[state.selectedIndex](state.selectedIndex)
                 return { selectedIndex: state.selectedIndex };
             case 'select':
@@ -141,8 +142,8 @@ const Menu = () => {
         <div className='menu-wrapper'>
             <div className='menu-header'><span id='h1' className='house-script'>Dimension Settings</span></div>
             <div className='menu-body' >{
-                [...menuItems.map((v: { name: string, info?: any }, i: number) =>
-                    <MenuItem title={v.name} key={i} info={v.info} style={{
+                [...menuItems.map((v: { name: string, info?: any, units?:any }, i: number) =>
+                    <MenuItem title={v.name} key={i} info={v.info} units={v.units} style={{
                         cursor: 'pointer',
                         backgroundColor: i === state.selectedIndex ? '#1b6262' : 'rgba(26, 31, 31, 0.811)',
                         color: i === state.selectedIndex ? 'rgba(220, 220, 220, 1)' : 'rgba(82, 82, 82, 1)'
