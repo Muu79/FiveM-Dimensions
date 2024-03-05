@@ -43,9 +43,9 @@ RegisterNUICallback('getMenuOptions', function(data, cb --[[function]])
   debugPrint('Data sent by react', json.encode(data))
   local MenuData <const> = {
     { name = 'Toggle Seeker' },
-    { name = 'Set Dimension Limit', info = GlobalState.limit },
-    { name = 'Set Warp Cooldown (Hider)', info = GlobalState.hiderTime / 1000},
-    { name = 'Set Warp Cooldown (Seeker)', info = GlobalState.seekerTime / 1000}
+    { name = 'Set Dimension Limit', info = GlobalState.limit},
+    { name = 'Set Warp Cooldown (Hider)', info = GlobalState.hiderTime / 1000, units ='sec'},
+    { name = 'Set Warp Cooldown (Seeker)', info = GlobalState.seekerTime / 1000, units ='sec'}
   }
   cb(MenuData)
 end)
@@ -56,11 +56,13 @@ end)
 
 RegisterNuiCallback('setCDTime', function(data, cb)
   data.type = string.lower(data.type)
+  print(data.type, 'got event', data.time, tonumber(data.time))
   if not tonumber(data.time) or tonumber(data.time) > 1000 or tonumber(data.time) < 0 then
     TriggerEvent('chat:AddMessage', { args = { '~r~Please Enter a Valid Number In Seconds Between 0 And 1000' } })
+    return cb({})
   end
-  if not data or not data.time or (data.type ~= 'hider' and data.type ~= 'seeker') then return end
   TriggerServerEvent('ch_dimensions:setCDTime', data.type, data.time)
+  cb({})
 end)
 
 RegisterNUICallback('setDimensionLimit', function(body, cb)
@@ -80,6 +82,7 @@ RegisterNetEvent('ch_buckets:pre_warp', function(bucketId)
     if (GetGameTimer() - lastJump) > (LocalPlayer.state.timer or 1000) then
       jumpCool = false
     else
+      TriggerEvent('chat:addMessage', {args={('~y~Cooldown is not up yet, %s seconds left'):format((3000 - (GetGameTimer() - lastJump))/1000)}})
       return
     end
   end
