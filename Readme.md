@@ -35,6 +35,10 @@ yarn build
 
 Download the zip file from the lastest [release](https://github.com/Muu79/FiveM-Dimensions/releases/latest/download/FiveM-Dimensions.zip) then extract the file into your resources folder
 
+## Start the resource
+
+add `ensure FiveM-Dimensions` to your `config.cfg` file or run `ensure FiveM-Dimensions` inside your server terminal once it has started
+
 ## Usage
 
 Press F5 to open the menu
