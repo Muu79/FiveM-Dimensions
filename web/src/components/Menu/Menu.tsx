@@ -3,8 +3,8 @@ import '../../css/fonts.css'
 import MenuItem from './MenuItem';
 import { useEffect, useReducer, useState } from 'react';
 import { fetchNui } from "../../utils/fetchNui";
-import { hasKey } from '../../utils/misc';
-import { wait } from '@testing-library/user-event/dist/utils';
+import { HUD } from './HUD';
+import { useVisibility } from '../../providers/VisibilityProvider';
 
 const initialState = { selectedIndex: 0 };
 
@@ -40,6 +40,7 @@ const useKeyPress = (targetKey: any) => {
 
 
 const Menu = () => {
+    const visible = useVisibility().visible;
     const [showInput, setShowInput] = useState<boolean>(false);
     const [input, setInput] = useState<string>();
     const handleChange = (e: any) => {
@@ -64,16 +65,23 @@ const Menu = () => {
 
         return () => window.removeEventListener('message', handleUpdate)
     })
+
     const [menuItems, setMenuItems] = useState<{ name: string; info?: any, units?: any }[]>([{ name: 'item1' }, { name: 'item2' }]);
     useEffect(() => {
         if (showInput) return;
         fetchNui('getMenuOptions').then((res: { name: string; info?: any, units?: any }[]) => {
             setMenuItems(res);
         }).catch(e => {
-            setMenuItems([{ 'name': 'item1' }, { 'name': 'item2' }, { 'name': 'item3', info: 33, units: 'dimensions' }])
+            setMenuItems([{ 'name': 'item1' }, { 'name': 'item2' }, { 'name': 'item3', info: 33, units: 'dimensions' }, { 'name': 'item4' }, { 'name': 'item5' }])
             console.error(e)
         })
     }, [nuiUpdate, showInput])
+
+    const [showHUD, setShowHUD] = useState<boolean>(false)
+    useEffect(() => {
+        if (!visible)
+            fetchNui('hideFrame')
+    }, [showHUD, visible])
 
     const menuFunctions = [
         (i: number) => {
@@ -105,6 +113,11 @@ const Menu = () => {
                 fetchNui('setCDTime', { time: input, type: 'seeker' }).then().catch(e => console.log(e))
                 setShowInput(false)
             };
+        },
+        (i: number) => {
+            if (!showInput) {
+                setShowHUD(!showHUD)
+            }
         }
     ]
 
@@ -151,20 +164,31 @@ const Menu = () => {
         }
     }, [enterPressed])
 
+    const [playerRole, setPlayerRole] = useState<string>("Hider")
+    const [pDIndex, setPDIndex] = useState<Number>(1);
+    useEffect(() => {
+        fetchNui('getHudInfo').then(res => {
+            setPlayerRole(res.role);
+            setPDIndex(res.index)
+        }).catch(e => {
+            console.debug(e);
+        })
+    }, [menuItems])
 
     return (<div>
-        <div className='menu-wrapper'>
+        {showHUD && <HUD props={{ role: playerRole, dimension: pDIndex }} className={'hud-wrapper'} />}
+        {visible && <div className='menu-wrapper'>
             <div className='menu-header'><span id='h1' className='house-script'>Dimension Settings</span></div>
             <div className='menu-body' >{
                 [...menuItems.map((v: { name: string, info?: any, units?: any }, i: number) =>
                     <MenuItem title={v.name} key={i} info={v.info} units={v.units} style={{
                         cursor: 'pointer',
                         backgroundColor: i === state.selectedIndex ? '#1b6262' : 'rgba(26, 31, 31, 0.811)',
-                        color: i === state.selectedIndex ? 'rgba(220, 220, 220, 1)' : 'rgba(82, 82, 82, 1)'
+                        color: i === state.selectedIndex ? 'rgba(220, 220, 220, 1)' : 'rgba(102, 102, 102, 0.5)'
                     }} />
                 )]
             }</div>
-        </div>
+        </div>}
         {showInput && <input autoFocus id='menuInputBox' onKeyDown={handleInputEnter} onChange={handleChange}></input>}</div>)
 }
 

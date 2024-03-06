@@ -1,12 +1,12 @@
 
 .menu-wrapper{
-    box-sizing: border-box;
-    width: fit-content;
+    box-sizing: content-box;
+    width: 40%;
     max-width: 350px;
     min-width: fit-content;
     height: auto;
     max-height: 35%;
-    background-color: rgba(35, 35, 35, 0.6);
+    background-color: rgba(35, 35, 35, 0.75);
     position: absolute;
     top: 10px;
     right: 15px;
@@ -26,6 +26,7 @@
   }
 
   .menu-body{
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -33,10 +34,12 @@
   }
 
   .menu-item{
+    box-sizing: border-box;
     padding: 5px;
     width: auto;
     min-width: fit-content;
     font-family: "Noto Sans Display", sans-serif;
+    font-size: 1.1rem;
   }
 
   #h1{
@@ -67,4 +70,20 @@
   .info{
     position: absolute;
     right: 5px;
+  }
+
+
+  /* HUD CSS */
+  .hud-wrapper{
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(35, 35, 35, 0.8);
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    padding: 15px;
+    font-family: "Noto Sans Display",'Times New Roman', sans-serif;
+    font-weight: 300;
+    font-size: 1.2rem;
+    color: aliceblue;
   }
