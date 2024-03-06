@@ -1,32 +1,19 @@
-fx_version 'cerulean'
-game 'gta5'
+fx_version "cerulean"
+
+
 lua54 'yes'
 
-
-
--- Client Scripts
-
-client_scripts {
-    'client/client.lua'
+games {
+  "gta5",
+  "rdr3"
 }
 
+ui_page 'web/build/index.html'
 
--- Server Scripts
-
-server_scripts{
-    'server/server.lua'
-}
-
--- Nui Info
-
-ui_page 'nui/nui.html'
+client_script "client/**/*"
+server_script "server/**/*"
 
 files {
-    'nui/my-app/src/nui.html',
-    'nui/css/style.css',
-    'nui/css/fonts.css',
-    'nui/fonts/*',
-    'nui/script.js',
-    'nui/images/*',
-    'nui/node_modules/*'
+  'web/build/index.html',
+  'web/build/**/*'
 }
