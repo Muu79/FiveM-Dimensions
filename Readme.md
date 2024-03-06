@@ -38,6 +38,7 @@ Download the zip file from the lastest [release](https://github.com/Muu79/FiveM-
 ## Usage
 
 Press F5 to open the menu
+
 ![Menu example](./images/MenuExample.png)
 
 Use enter to select any of the options navigating using the arrow keys. Use F5 again to close the menu
