@@ -37,7 +37,7 @@ Download the zip file from the lastest [release](https://github.com/Muu79/FiveM-
 
 ## Start the resource
 
-add `ensure FiveM-Dimensions` to your `config.cfg` file or run `ensure FiveM-Dimensions` inside your server terminal once it has started
+add `ensure FiveM-Dimensions` to your `server.cfg` file or run `ensure FiveM-Dimensions` inside your server terminal once it has started
 
 ## Usage
 
