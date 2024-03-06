@@ -1,6 +1,5 @@
 import React, {Context, createContext, useContext, useEffect, useState} from "react";
 import {useNuiEvent} from "../hooks/useNuiEvent";
-import {fetchNui} from "../utils/fetchNui";
 
 const VisibilityCtx = createContext<VisibilityProviderValue | null>(null)
 
@@ -19,11 +18,10 @@ export const VisibilityProvider: React.FC = ({children}) => {
   // Handle pressing escape/backspace
   useEffect(() => {
     // Only attach listener when we are visible
-    if (!visible) return;
 
     const keyHandler = (e: KeyboardEvent) => {
       if (["F5"].includes(e.key)) {
-        fetchNui('hideFrame')
+        setVisible(!visible)
       }
     }
 
@@ -39,7 +37,7 @@ export const VisibilityProvider: React.FC = ({children}) => {
         setVisible
       }}
     >
-    <div style={{ visibility: visible ? 'visible' : 'hidden', height: '100%'}}>
+    <div style={{height: '100%'}}>
       {children}
     </div>
   </VisibilityCtx.Provider>)
