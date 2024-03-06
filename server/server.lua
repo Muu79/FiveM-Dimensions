@@ -1,15 +1,14 @@
 RegisterNetEvent('ch_buckets:warp', function(bucketId, vehicleNetId)
     local targetId = source
     Player(targetId).state:set('dimension', bucketId, true)
+    TriggerClientEvent('ch_dimensions:updateReact', source)
     if not vehicleNetId then
         SetPlayerRoutingBucket(targetId, bucketId)
     else
         local vehicleId = NetworkGetEntityFromNetworkId(vehicleNetId)
-        print(vehicleId, vehicleNetId)
         SetPlayerRoutingBucket(targetId, bucketId)
         SetEntityRoutingBucket(vehicleId, bucketId)
     end
-    print(Player(targetId).state.dimension)
 end)
 
 CreateThread(function()
@@ -30,48 +29,13 @@ RegisterNetEvent('ch_dimensions:updateLimit', function(newLimit)
 end)
 
 RegisterNetEvent('ch_dimensions:setCDTime', function(cdType, newCd)
-    print('hit server side', cdType, newCd)
     if cdType == 'hider' then
         GlobalState:set('hiderTime', newCd * 1000.0 --[[Converts seconds to ms]], true)
     elseif cdType == 'seeker' then
         GlobalState:set('seekerTime', newCd * 1000.0, true)
     else
-        print("Invalid type on ch_dimensions:setCDTime")
+        return
     end
     TriggerClientEvent('ch_dimensions:updateReact', source)
-    print(string.format("hider time: %s     seekerTime: %s", GlobalState.hiderTime, GlobalState.seekerTime))
+    TriggerClientEvent('ch_dimensions:updateTimers', source)
 end)
-
-RegisterCommand('bucket', function(source, args, raw)
-    local player = source
-    print(GetEntityRoutingBucket(GetPlayerPed(player)))
-end)
-
-
-RegisterCommand('+slideUp', function(source, args, raw)
-    local limit = GlobalState.limit
-    local currDimension = LocalPlayer.state.dimension
-    if currDimension == limit then
-      return
-    elseif currDimension > limit or currDimension < 0 then
-      TriggerEvent('ch_buckets:pre_warp', limit)
-      return
-    end
-    TriggerEvent('ch_buckets:pre_warp', currDimension + 1)
-  end, false)
-  RegisterCommand('-slideUp', function(source, args, raw)
-  end, false)
-  
-  
-  RegisterCommand('+slideDown', function(source, args, raw)
-    if LocalPlayer.state.dimension == 0 then
-      return
-    elseif LocalPlayer.state.dimension < 0 or LocalPlayer.state.dimension > GlobalState.limit then
-      TriggerEvent('ch_buckets:pre_warp', 0)
-      return
-    end
-    TriggerEvent('ch_buckets:pre_warp', LocalPlayer.state.dimension - 1)
-  end, false)
-  RegisterCommand('-slideDown', function(source, args, raw)
-  end, false)
-  
